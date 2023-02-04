@@ -12,14 +12,14 @@ type ProductHandlers struct {
 	ListProductsUseCase  *usecase.ListProductsUseCase
 }
 
-func newProductsHandlers(createProductuseCase *usecase.CreateProductUseCase, listProductsUseCase *usecase.ListProductsUseCase) *ProductHandlers {
+func NewProductsHandlers(createProductuseCase *usecase.CreateProductUseCase, listProductsUseCase *usecase.ListProductsUseCase) *ProductHandlers {
 	return &ProductHandlers{
 		CreateProductUseCase: createProductuseCase,
 		ListProductsUseCase:  listProductsUseCase,
 	}
 }
 
-func (p *ProductHandlers) CreateProducthandler(writer http.ResponseWriter, request *http.Request) {
+func (p *ProductHandlers) CreateProductHandler(writer http.ResponseWriter, request *http.Request) {
 	var input usecase.CreateProductInputDTO
 
 	err := json.NewDecoder(request.Body).Decode(&input)
@@ -44,7 +44,7 @@ func (p *ProductHandlers) CreateProducthandler(writer http.ResponseWriter, reque
 	json.NewEncoder(writer).Encode(output)
 }
 
-func (p *ProductHandlers) ListProducthandler(writer http.ResponseWriter) {
+func (p *ProductHandlers) ListProductHandler(writer http.ResponseWriter, request *http.Request) {
 	output, err := p.ListProductsUseCase.Execute()
 
 	if err != nil {

@@ -4,10 +4,13 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/go-chi/chi/v5"
 	"github.com/mauFade/go-messaging/internal/infra/akafka"
 	"github.com/mauFade/go-messaging/internal/infra/repository"
+	"github.com/mauFade/go-messaging/internal/infra/web"
 	"github.com/mauFade/go-messaging/internal/usecase"
 )
 
@@ -20,12 +23,22 @@ func main() {
 
 	defer db.Close()
 
-	msgChan := make(chan *kafka.Message)
-
-	go akafka.Consume([]string{"products"}, "host.docker.internal:9094", msgChan)
-
 	repository := repository.NewRepository(db)
 	createProductUseCase := usecase.NewCreateProductUseCase(repository)
+	listProductsUseCase := usecase.NewListProductsUseCase(repository)
+
+	productsHandlers := web.NewProductsHandlers(createProductUseCase, listProductsUseCase)
+
+	router := chi.NewRouter()
+
+	// Rotas
+	router.Post("/products", productsHandlers.CreateProductHandler)
+	router.Get("/products", productsHandlers.ListProductHandler)
+
+	go http.ListenAndServe(":8081", router)
+
+	msgChan := make(chan *kafka.Message)
+	go akafka.Consume([]string{"products"}, "host.docker.internal:9094", msgChan)
 
 	for msg := range msgChan {
 		dto := usecase.CreateProductInputDTO{}
