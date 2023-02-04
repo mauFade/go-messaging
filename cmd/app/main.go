@@ -12,10 +12,12 @@ import (
 	"github.com/mauFade/go-messaging/internal/infra/repository"
 	"github.com/mauFade/go-messaging/internal/infra/web"
 	"github.com/mauFade/go-messaging/internal/usecase"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
-	db, err := sql.Open("mysql", "root:root@tcp(host.docker.internal:3306/products)")
+	db, err := sql.Open("mysql", "root:root@tcp(host.docker.internal:3306)/products")
 
 	if err != nil {
 		panic(err)

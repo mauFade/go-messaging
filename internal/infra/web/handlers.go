@@ -36,7 +36,7 @@ func (p *ProductHandlers) CreateProductHandler(writer http.ResponseWriter, reque
 		return
 	}
 
-	writer.Header().Set("content-type", "application/json")
+	writer.Header().Set("Content-Type", "application/json")
 
 	writer.WriteHeader(http.StatusCreated)
 
@@ -52,7 +52,7 @@ func (p *ProductHandlers) ListProductHandler(writer http.ResponseWriter, request
 		return
 	}
 
-	writer.Header().Set("content-type", "application/json")
+	writer.Header().Set("Content-Type", "application/json")
 
 	writer.WriteHeader(http.StatusOK)
 
